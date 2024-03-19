@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tamagotchi</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/prop-types/prop-types.js"></script>
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      
+      document.body.style.margin = 0
+      document.body.style.padding = 0
+
+      const spinner = {
+        border: '4px solid rgba(0, 0, 0, 0.1)',
+        width: '120px',
+        height: '120px',
+        borderRadius: '50%',
+        borderLeftColor: 'rgb(255, 17, 0)',
+        animation: 'spin 1s ease infinite',
+        display: 'block',
+        padding: '20px',
+        marginTop: '100px',
+      }
+
+      
+const Header = () => {
+  const styles = {
+    padding: '20px 25px',
+    backgroundColor: '#e980fc',
+    fontSize: '30px',
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    color: 'black',
+    fontWeight: 'bold',
+    position: 'fixed',
+    top: 0,
+    width: '100%',
+    display: 'flex', // Use flexbox to align items
+    alignItems: 'center', // Align items vertically in the center
+    justifyContent: 'center', // Center items horizontally
+  };
+
+  const imageStyles = {
+    width: '5%', // Adjust the width of the image as needed
+    marginRight: '10px', // Adjust the spacing between image and text
+  };
+
+  return (
+    <header style={styles}>
+      <img src="./Images/tinky-winky.png" alt="Tinky Winky Logo" style={imageStyles} />
+      <span>Kuchipatchi town</span>
+    </header>
+  );
+};
+
+      const Footer = () => {
+  const styles = {
+    padding: '20px 25px',
+    backgroundColor: '#e980fc',
+    fontSize: '14px',
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    color: 'black',
+    fontWeight: 'bold',
+    position: 'fixed',
+    bottom: 0,
+    width: '100%',
+  };
+
+  return (
+    <footer style={styles}>
+      Copyright 2024 UVG® - By Nicolle Gordillo
+    </footer>
+  );
+};
+
+      const Post = ({
+  name,
+  description,
+  price,
+  category,
+  image
+}) => {
+  const containerStyles = {
+    background: 'rgba(255, 255, 255)',
+    color: 'rgba(40, 55, 71)',
+    fontFamily: 'sans-serif',
+    textAlign: 'center',
+    padding: '20px',
+    width: '60%',
+    height:'100%'
+  }
+
+  const imageStyles = {
+    borderRadius: '10px',
+    width: '100%',
+    height: '70%',
+    margin: '10px 0',
+  }
+
+ 
+
+  return (
+    <div style={containerStyles}>
+	<h1>{name}</h1>
+	<div style={imageStyles}>
+        <img
+          src={image} // Usar la URL de la imagen decodificada
+          alt={name} // Usar el nombre del producto como alternativa de texto
+          style={{ maxWidth: '50%', maxHeight: 'auto' }}
+        />
+      </div>
+      
+      <p>{description}</p>
+      <p>{price}</p>
+      <p>{category}</p>
+      
+    </div>
+  )
+}
+
+      Post.propTypes = {
+        name: PropTypes.string.isRequired,
+        description: PropTypes.string.isRequired,
+        price: PropTypes.string.isRequired,
+        category: PropTypes.string.isRequired,
+        image: PropTypes.string.isRequired
+      }
+
+      const EmptyState = () => {
+        const styles = {
+          textAlign: 'center',
+          marginTop: '100px',
+          marginBottom: '100px',
+          color: 'rgba(40, 55, 71)',
+          borderRadius: '20px',
+          backgroundColor: 'rgba(235, 150, 28)',
+          width: '60%',
+          padding: '20px',
+          fontFamily: 'Times New Roman, sans-serif',
+          fontSize: '1.5em',
+        }
+        const imageStyles = {
+          borderRadius: '10px',
+          width: '100%',
+          margin: '10px 0',
+        }
+
+        return (
+          <div style={styles}>
+            <h2>No hay posts para mostrar</h2>
+            <p>
+              No hay contenido en este momento :(  ¡Intenta más tarde!
+            </p>
+  
+          </div>
+        )
+      }
+
+      const Posts = () => {
+        const styles = {
+          listStyle: 'none',
+          padding: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }
+
+        const [posts, setPosts] = React.useState([])
+        const [isLoading, setIsLoading] = React.useState(true)
+
+        const getPosts = async () => {
+          setIsLoading(true)
+          try {
+            const apiResponse = await fetch(
+              'https://api.tiburoncin.lat/22246/posts'
+            )
+
+            if (!apiResponse.ok) {
+              throw new Error(
+                `API call failed with status: ${apiResponse.status}`
+              )
+            }
+
+            const jsonPosts = await apiResponse.json()
+
+            if (!Array.isArray(jsonPosts)) {
+              throw new Error(
+                'Data format is incorrect, expected an array of posts'
+              )
+            }
+
+            const formattedPosts = jsonPosts
+              
+              .map(
+                ({
+                  id,
+                  name,
+                  description,
+                  price,
+                  category,
+                  image
+                }) => ({
+                  id,
+                  name,
+                  description,
+                  price,
+                  category,
+                  image
+                })
+              )
+            setPosts(formattedPosts)
+          } catch (error) {
+            console.error('Failed to fetch posts:', error)
+          }
+          setIsLoading(false)
+        }
+
+        React.useEffect(() => {
+          getPosts()
+        }, [])
+
+        if (isLoading) {
+          return <Loading />
+        } else if (posts.length === 0) {
+          return <EmptyState />
+        }
+
+        return (
+          <ul style={styles}>
+            {posts.map(
+              ({
+                id,
+                  name,
+                  description,
+                  price,
+                  category,
+                  image
+              }) => (
+                <Post
+                  name={name}
+                  description={description}
+                  price={price}
+                  category={category}
+                  image={image}
+                />
+              )
+            )}
+          </ul>
+        )
+      }
+
+      const Loading = () => {
+        return (
+          <div>
+            <div style={spinner}></div>
+          </div>
+        )
+      }
+
+      const App = () => {
+        const styles = {
+          fontFamily: 'Times New Roman, sans-serif',
+          backgroundImage: 'linear-gradient(135deg, #db00b6 25%, transparent 25%), linear-gradient(225deg, #db00b6 25%, transparent 25%), linear-gradient(45deg, #db00b6 25%, transparent 25%), linear-gradient(315deg, #db00b6 25%, #64dfdf 25%)',
+    backgroundPosition: '40px 0, 40px 0, 0 0, 0 0',
+    backgroundSize: '80px 80px',
+    backgroundRepeat: 'repeat',
+          color: 'black',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          margin: 0,
+          padding: 0,
+          minHeight: '100vh',
+        }
+        const divStyle = {
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+          marginTop: '40px',
+        }
+
+        return (
+          <main style={styles}>
+            <Header />
+            <div style={divStyle}>
+              <React.Suspense fallback={<Loading />}>
+                <Posts />
+              </React.Suspense>
+            </div>
+            <Footer />
+          </main>
+        )
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById('root'))
+      root.render(<App />)
+    </script>
+  </body>
+</html>
