@@ -7,14 +7,45 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://unpkg.com/prop-types/prop-types.js"></script>
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
+<style>
+      @keyframes mltShdSpin {
+    0% {
+      box-shadow: 0 -0.83em 0 -0.4em,
+      0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    }
+    5%,
+    95% {
+      box-shadow: 0 -0.83em 0 -0.4em, 
+      0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 
+      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    }
+    10%,
+    59% {
+      box-shadow: 0 -0.83em 0 -0.4em, 
+      -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, 
+      -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+    }
+    20% {
+      box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em,
+       -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, 
+       -0.749em -0.34em 0 -0.477em;
+    }
+    38% {
+      box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em,
+       -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, 
+       -0.82em -0.09em 0 -0.477em;
+    }
+    100% {
+      box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 
+      0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    }
+  }
+
+  @keyframes round {
+    0% { transform: rotate(0deg) }
+    100% { transform: rotate(360deg) }
+  }
     </style>
   </head>
   <body>
@@ -24,23 +55,27 @@
       document.body.style.margin = 0
       document.body.style.padding = 0
 
-      const spinner = {
-        border: '4px solid rgba(0, 0, 0, 0.1)',
-        width: '120px',
-        height: '120px',
-        borderRadius: '50%',
-        borderLeftColor: 'rgb(255, 17, 0)',
-        animation: 'spin 1s ease infinite',
-        display: 'block',
-        padding: '20px',
-        marginTop: '100px',
+      const loadingStyle = {
+        color: '#ffffff',
+    fontSize: '45px',
+    textIndent: '-9999em',
+    overflow: 'hidden',
+    width: '1em',
+    height: '1em',
+    borderRadius: '50%',
+    position: 'relative',
+    transform: 'translateZ(0)',
+    animation: 'mltShdSpin 1.7s infinite ease, round 1.7s infinite ease',
+    marginTop: '150px',
+marginLeft: 'auto',
+  marginRight: 'auto'
       }
 
       
 const Header = () => {
   const styles = {
     padding: '20px 25px',
-    backgroundColor: '#e980fc',
+    backgroundColor: '#E8A7DD',
     fontSize: '30px',
     textAlign: 'center',
     textTransform: 'uppercase',
@@ -52,6 +87,7 @@ const Header = () => {
     display: 'flex', // Use flexbox to align items
     alignItems: 'center', // Align items vertically in the center
     justifyContent: 'center', // Center items horizontally
+zIndex: '2',
   };
 
   const imageStyles = {
@@ -70,7 +106,7 @@ const Header = () => {
       const Footer = () => {
   const styles = {
     padding: '20px 25px',
-    backgroundColor: '#e980fc',
+    backgroundColor: '#E8A7DD',
     fontSize: '14px',
     textAlign: 'center',
     textTransform: 'uppercase',
@@ -88,7 +124,7 @@ const Header = () => {
   );
 };
 
-      const Post = ({
+     const Post = ({
   name,
   description,
   price,
@@ -102,36 +138,57 @@ const Header = () => {
     textAlign: 'center',
     padding: '20px',
     width: '60%',
-    height:'100%'
-  }
+    height: 'auto',
+    margin: '100px auto 40px', // Adjust margin to ensure posts start below the header
+    position: 'relative', // Make sure the container is positioned relative
+    zIndex: '0', // Set a lower z-index to ensure the header stays on top
+  };
+
+  const divStyle = {
+    display: 'flex', // Use flexbox to align items
+    justifyContent: 'center',
+  };
 
   const imageStyles = {
     borderRadius: '10px',
-    width: '100%',
+    width: '70%',
     height: '70%',
     margin: '10px 0',
-  }
+    display: 'flex', // Use flexbox to align items
+    justifyContent: 'center',
+  };
 
- 
+  const categoryStyles = {
+    backgroundColor: 'black',
+    color: 'white',
+    padding: '5px 10px',
+    position: 'absolute',
+    top: '-30px', // Adjust this value to position the category above the name
+    left: '40px', // Adjust this value to center the category
+    transform: 'translateX(-50%)', // Center the category horizontally
+    zIndex: '1',
+  };
 
   return (
     <div style={containerStyles}>
-	<h1>{name}</h1>
-	<div style={imageStyles}>
-        <img
-          src={image} // Usar la URL de la imagen decodificada
-          alt={name} // Usar el nombre del producto como alternativa de texto
-          style={{ maxWidth: '50%', maxHeight: 'auto' }}
-        />
+      <div style={{ position: 'relative', width: '100%' }}>
+        <div style={categoryStyles}>{category}</div>
+        <h2>{name}</h2>
+	<div style={divStyle}>
+        <div style={imageStyles}>
+          <img
+            src={image}
+            alt={name}
+            style={{ maxWidth: '50%', maxHeight: 'auto' }}
+          />
+        </div>
+</div>
+        <p>{description}</p>
+        <h3>{price} G</h3>
       </div>
-      
-      <p>{description}</p>
-      <p>{price}</p>
-      <p>{category}</p>
-      
     </div>
-  )
-}
+  );
+};
 
       Post.propTypes = {
         name: PropTypes.string.isRequired,
@@ -170,6 +227,7 @@ const Header = () => {
           </div>
         )
       }
+      
 
       const Posts = () => {
         const styles = {
@@ -265,12 +323,41 @@ const Header = () => {
       }
 
       const Loading = () => {
-        return (
-          <div>
-            <div style={spinner}></div>
-          </div>
-        )
-      }
+  return (
+    <div className="loader" style={loadingStyle}></div>
+  )
+}
+
+const Introduction = () => {
+  const containerStyles = {
+    textAlign: 'center',
+    marginTop: '50px',
+    marginBottom: '50px',
+    color: 'black',
+    backgroundColor: 'white', // Fondo blanco
+    width: '60%', // Ancho igual al de los posts
+    margin: '0 auto 50px', // Centrar horizontalmente
+    padding: '20px', // Espaciado interno
+fontFamily: 'sans-serif',
+
+  };
+
+
+  const imageStyles = {
+    width: '35%',
+    borderRadius: '10px',
+  };
+
+  return (
+    <div style={containerStyles}>
+      <p>
+        En este blog encontrarás contenido sobre los objetos disponibles en el tamagotchi v5 celebrity.
+      </p>
+      <h3>Este blog está inspirado en mi tamagotchi!</h3>
+      <img src="./Images/tama.jpeg" alt="Kuchipatchi Town" style={imageStyles} />
+    </div>
+  );
+};
 
       const App = () => {
         const styles = {
@@ -298,11 +385,13 @@ const Header = () => {
         return (
           <main style={styles}>
             <Header />
-            <div style={divStyle}>
+
+            <div style={{ flex: 1 }}>
               <React.Suspense fallback={<Loading />}>
                 <Posts />
               </React.Suspense>
             </div>
+<Introduction />
             <Footer />
           </main>
         )
