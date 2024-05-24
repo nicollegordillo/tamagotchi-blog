@@ -88,6 +88,7 @@ const Header = () => {
     alignItems: 'center', // Align items vertically in the center
     justifyContent: 'center', // Center items horizontally
 zIndex: '2',
+fontFamily: 'sans-serif',
   };
 
   const imageStyles = {
@@ -115,11 +116,12 @@ zIndex: '2',
     position: 'fixed',
     bottom: 0,
     width: '100%',
+fontFamily: 'sans-serif',
   };
 
   return (
     <footer style={styles}>
-      Copyright 2024 UVG® - By Nicolle Gordillo
+      Copyright 2024 UVG© - Por Nicolle Gordillo
     </footer>
   );
 };
@@ -201,29 +203,21 @@ zIndex: '2',
       const EmptyState = () => {
         const styles = {
           textAlign: 'center',
-          marginTop: '100px',
-          marginBottom: '100px',
-          color: 'rgba(40, 55, 71)',
-          borderRadius: '20px',
-          backgroundColor: 'rgba(235, 150, 28)',
+          color: 'black',
+          backgroundColor: 'white',
           width: '60%',
           padding: '20px',
-          fontFamily: 'Times New Roman, sans-serif',
+          fontFamily: 'sans-serif',
           fontSize: '1.5em',
-        }
-        const imageStyles = {
-          borderRadius: '10px',
-          width: '100%',
-          margin: '10px 0',
+	  margin: '100px auto 0',
         }
 
         return (
           <div style={styles}>
-            <h2>No hay posts para mostrar</h2>
+            <h1>No hay posts para mostrar</h1>
             <p>
-              No hay contenido en este momento :(  ¡Intenta más tarde!
+              No hay contenido en este momento :(  
             </p>
-  
           </div>
         )
       }
